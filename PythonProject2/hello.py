@@ -1,0 +1,27 @@
+import cv2
+from cvzone.HandTrackingModule import HandDetector
+
+# Start webcam
+cap = cv2.VideoCapture(0)
+detector = HandDetector(detectionCon=0.8, maxHands=2)
+
+while True:
+    success, img = cap.read()
+    if not success:
+        break
+
+    # Detect hands
+    hands, img = detector.findHands(img)
+
+    if hands:
+        for hand in hands:
+            fingers = detector.fingersUp(hand)
+            print(f"Fingers: {fingers.count(1)}")  # Count number of fingers up
+
+    cv2.imshow("Hand Detection", img)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
